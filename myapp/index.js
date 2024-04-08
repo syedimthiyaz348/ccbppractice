@@ -47,7 +47,7 @@ app.get('/players/:playerId/', async (request, response) => {
                 player_name AS playerName
              FROM player_details
             WHERE player_id = ${playerId};`
-  const player = await database.all(getPlayerQuery)
+  const player = await database.get(getPlayerQuery)
   response.send(player)
 })
 
@@ -70,18 +70,18 @@ app.get('/matches/:matchId/', async (request, response) => {
             match, year
          FROM match_details
         WHERE match_id = ${matchId};`
-  const db4 = await database.all(api4)
+  const db4 = await database.get(api4)
   response.send(db4)
 })
 
-app.get('/players/:playerId/matches', async (request, response) => {
+app.get('/players/:playerId/matches/', async (request, response) => {
   const {playerId} = request.params
   const exampleApi = `
             SELECT 
-                player_match_score.match_id AS matchId,
+                match_id AS matchId,
                 match,
                 year
-             FROM player_match_score JOIN match_details
+             FROM player_match_score NATURAL JOIN match_details
              WHERE player_id = ${playerId};`
   const ex = await database.all(exampleApi)
   response.send(ex)
@@ -113,7 +113,7 @@ app.get('/players/:playerId/playerScores', async (request, response) => {
 
     WHERE player_details.player_id = ${playerId};
     `
-  const ex = await database.all(exampleApi)
+  const ex = await database.get(exampleApi)
   response.send(ex)
 })
 
